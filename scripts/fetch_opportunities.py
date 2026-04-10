@@ -61,7 +61,7 @@ def fetch_sam() -> list:
     url = (
         f"https://api.sam.gov/prod/opportunities/v2/search"
         f"?api_key={API_KEY}"
-        f"&limit=100"
+        f"&limit=250"
         f"&postedFrom={urllib.parse.quote(from_dt)}"
         f"&postedTo={urllib.parse.quote(to_dt)}"
     )
@@ -80,13 +80,10 @@ def fetch_sam() -> list:
         return []
 
     raw  = data.get("opportunitiesData", [])
-    print(f"  → SAM.gov raw records before filter: {len(raw)} (totalRecords: {data.get('totalRecords', '?')})")
+    print(f"  → SAM.gov raw records: {len(raw)} (totalRecords: {data.get('totalRecords', '?')})")
     opps = []
     for o in raw:
-        naics = str(o.get("naicsCode") or "541512")
-        # Only keep if NAICS matches our targets
-        if not any(naics.startswith(n[:4]) for n in NAICS_CODES):
-            continue
+        naics = str(o.get("naicsCode") or "")
         opps.append({
             "id":         o.get("noticeId") or o.get("id", ""),
             "source":     "SAM.gov",
