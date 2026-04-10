@@ -59,7 +59,7 @@ def fetch_sam() -> list:
     naics_q  = ",".join(NAICS_CODES)
 
     url = (
-        f"https://api.sam.gov/opportunities/v2/search"
+        f"https://api.sam.gov/prod/opportunities/v2/search"
         f"?api_key={API_KEY}"
         f"&limit=100"
         f"&postedFrom={urllib.parse.quote(from_dt)}"
