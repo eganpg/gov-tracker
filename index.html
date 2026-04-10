@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GovCon Pipeline — Digital Services</title>
+<style>
+  :root {
+    --navy: #0a2342;
+    --blue: #1a4f8a;
+    --accent: #2d8cf0;
+    --green: #27ae60;
+    --yellow: #f39c12;
+    --red: #e74c3c;
+    --purple: #8e44ad;
+    --gray: #f4f6f9;
+    --border: #dde3ed;
+    --text: #1e2d3d;
+    --muted: #6b7a8d;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--gray); color: var(--text); font-size: 14px; }
+
+  /* TOP BAR */
+  .topbar { background: var(--navy); color: white; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,.3); }
+  .topbar .logo { font-size: 18px; font-weight: 700; letter-spacing: -.3px; }
+  .topbar .logo span { color: var(--accent); }
+  .topbar-right { display: flex; gap: 12px; align-items: center; }
+  .api-badge { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); border-radius: 20px; padding: 4px 14px; font-size: 12px; cursor: pointer; transition: background .2s; }
+  .api-badge:hover { background: rgba(255,255,255,.2); }
+  .api-badge.connected { border-color: var(--green); color: #7dffb3; }
+  .api-badge.disconnected { border-color: #ff8080; color: #ffb3b3; }
+
+  /* LAYOUT */
+  .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+  .tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 2px solid var(--border); }
+  .tab { padding: 10px 20px; cursor: pointer; border-radius: 8px 8px 0 0; font-weight: 500; color: var(--muted); border: 1px solid transparent; border-bottom: none; transition: all .15s; }
+  .tab:hover { background: white; color: var(--text); }
+  .tab.active { background: white; color: var(--blue); border-color: var(--border); border-bottom-color: white; margin-bottom: -2px; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* STATS */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .stat-card { background: white; border-radius: 10px; padding: 18px 20px; border: 1px solid var(--border); }
+  .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); margin-bottom: 6px; }
+  .stat-val { font-size: 26px; font-weight: 700; color: var(--text); }
+  .stat-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .stat-card.blue .stat-val { color: var(--accent); }
+  .stat-card.green .stat-val { color: var(--green); }
+  .stat-card.yellow .stat-val { color: var(--yellow); }
+  .stat-card.purple .stat-val { color: var(--purple); }
+
+  /* FILTER BAR */
+  .filter-bar { background: white; border-radius: 10px; border: 1px solid var(--border); padding: 14px 18px; margin-bottom: 18px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .filter-bar input, .filter-bar select { border: 1px solid var(--border); border-radius: 6px; padding: 7px 12px; font-size: 13px; color: var(--text); background: var(--gray); outline: none; }
+  .filter-bar input:focus, .filter-bar select:focus { border-color: var(--accent); background: white; }
+  .filter-bar input[type=text] { flex: 1; min-width: 200px; }
+  .btn { padding: 7px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; font-weight: 500; transition: all .15s; }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: #1a7de0; }
+  .btn-sm { padding: 4px 12px; font-size: 12px; }
+  .btn-outline { background: white; border: 1px solid var(--border); color: var(--text); }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-green { background: var(--green); color: white; }
+  .btn-green:hover { background: #219a52; }
+
+  /* OPPORTUNITY CARDS */
+  .opp-grid { display: flex; flex-direction: column; gap: 12px; }
+  .opp-card { background: white; border-radius: 10px; border: 1px solid var(--border); padding: 18px 20px; transition: box-shadow .15s, border-color .15s; cursor: pointer; position: relative; }
+  .opp-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.08); border-color: #b0c4de; }
+  .opp-card.pinned { border-left: 4px solid var(--accent); }
+  .opp-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .opp-title { font-size: 15px; font-weight: 600; color: var(--navy); flex: 1; line-height: 1.4; }
+  .opp-score { min-width: 48px; text-align: center; }
+  .score-circle { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: white; }
+  .score-high { background: var(--green); }
+  .score-med { background: var(--yellow); }
+  .score-low { background: var(--muted); }
+  .opp-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+  .tag-agency { background: #e8f0fe; color: #1a56a0; }
+  .tag-naics { background: #f0f0ff; color: #5b4fcf; }
+  .tag-setaside { background: #e6f4ea; color: #1e7e34; }
+  .tag-type { background: #fff3e0; color: #b25e00; }
+  .tag-source { background: #fce4ec; color: #c2185b; }
+  .opp-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .opp-dates { font-size: 12px; color: var(--muted); }
+  .opp-dates strong { color: var(--text); }
+  .opp-actions { display: flex; gap: 6px; }
+  .deadline-urgent { color: var(--red); font-weight: 600; }
+  .deadline-soon { color: var(--yellow); font-weight: 600; }
+
+  /* DETAIL PANEL */
+  .detail-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 200; }
+  .detail-overlay.open { display: flex; align-items: flex-start; justify-content: flex-end; }
+  .detail-panel { background: white; width: min(700px, 100%); height: 100%; overflow-y: auto; padding: 28px; box-shadow: -4px 0 32px rgba(0,0,0,.15); }
+  .detail-close { float: right; background: none; border: none; font-size: 22px; cursor: pointer; color: var(--muted); margin-top: -4px; }
+  .detail-section { margin-bottom: 20px; }
+  .detail-section h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); margin-bottom: 8px; }
+  .score-bar-wrap { background: var(--border); border-radius: 4px; height: 8px; width: 100%; }
+  .score-bar { height: 8px; border-radius: 4px; background: linear-gradient(90deg, var(--accent), var(--green)); }
+  .criteria-row { display: flex; justify-content: space-between; font-size: 13px; padding: 5px 0; border-bottom: 1px solid var(--border); }
+  .criteria-row:last-child { border: none; }
+
+  /* PIPELINE BOARD */
+  .kanban { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; min-height: 400px; }
+  .kanban-col { background: white; border-radius: 10px; border: 1px solid var(--border); padding: 14px; }
+  .kanban-col-header { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+  .kanban-count { background: var(--gray); border-radius: 20px; padding: 2px 8px; font-size: 11px; }
+  .kanban-card { background: var(--gray); border-radius: 7px; padding: 10px 12px; margin-bottom: 8px; font-size: 13px; border: 1px solid var(--border); cursor: pointer; }
+  .kanban-card:hover { border-color: var(--accent); }
+  .kanban-card-title { font-weight: 500; line-height: 1.3; margin-bottom: 4px; }
+  .kanban-card-meta { font-size: 11px; color: var(--muted); }
+
+  /* PROPOSAL HELPER */
+  .proposal-section { background: white; border-radius: 10px; border: 1px solid var(--border); padding: 24px; margin-bottom: 20px; }
+  .proposal-section h2 { font-size: 16px; font-weight: 600; margin-bottom: 16px; color: var(--navy); }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-group label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; }
+  .form-group input, .form-group select, .form-group textarea { border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; font-size: 13px; outline: none; font-family: inherit; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent); }
+  .form-group textarea { resize: vertical; min-height: 80px; }
+  .checklist { list-style: none; }
+  .checklist li { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .checklist li:last-child { border: none; }
+  .checklist input[type=checkbox] { margin-top: 2px; width: 15px; height: 15px; cursor: pointer; }
+  .checklist label { cursor: pointer; line-height: 1.4; }
+
+  /* SETTINGS */
+  .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .settings-card { background: white; border-radius: 10px; border: 1px solid var(--border); padding: 20px; }
+  .settings-card h3 { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 14px; }
+  .naics-pill { display: inline-flex; align-items: center; gap: 6px; background: #e8f0fe; color: #1a56a0; border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 500; margin: 3px; }
+  .naics-pill button { background: none; border: none; cursor: pointer; color: #1a56a0; font-size: 14px; line-height: 1; padding: 0; }
+  .alert { padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 14px; }
+  .alert-info { background: #e8f0fe; border: 1px solid #b0c4de; color: #1a4f8a; }
+  .alert-success { background: #e6f4ea; border: 1px solid #a0d4aa; color: #1e5631; }
+  .alert-warning { background: #fff3cd; border: 1px solid #ffc107; color: #7d5a00; }
+
+  /* LOADING */
+  .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.3); border-top-color: white; border-radius: 50%; animation: spin .7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+
+  /* SOURCE INDICATORS */
+  .source-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .source-sam { background: #1a56a0; }
+  .source-sbir { background: #c2185b; }
+  .source-gsa { background: #2e7d32; }
+  .source-usa { background: #7b1fa2; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .kanban { grid-template-columns: 1fr; }
+    .settings-grid { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="logo">Gov<span>Con</span> Pipeline</div>
+  <div class="topbar-right">
+    <span style="font-size:12px;color:rgba(255,255,255,.5)">HUBZone · SB · WOSB</span>
+    <span class="api-badge disconnected" id="apiStatusBadge" onclick="showTab('settings')">⚡ API: Connect SAM.gov</span>
+    <span class="api-badge" onclick="syncAll()" id="syncBtn">↺ Sync Now</span>
+  </div>
+</div>
+
+<div class="container">
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('dashboard')">📊 Dashboard</div>
+    <div class="tab" onclick="showTab('opportunities')">🔎 Opportunities</div>
+    <div class="tab" onclick="showTab('pipeline')">📋 Pipeline Board</div>
+    <div class="tab" onclick="showTab('proposal')">✍️ Proposal Helper</div>
+    <div class="tab" onclick="showTab('settings')">⚙️ Settings</div>
+  </div>
+
+  <!-- DASHBOARD TAB -->
+  <div class="tab-panel active" id="tab-dashboard">
+    <div class="stats-grid">
+      <div class="stat-card blue">
+        <div class="stat-label">Open Opportunities</div>
+        <div class="stat-val" id="statOpen">0</div>
+        <div class="stat-sub">Matching your profile</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-label">High-Fit (Score ≥80)</div>
+        <div class="stat-val" id="statHigh">0</div>
+        <div class="stat-sub">Strongly recommended</div>
+      </div>
+      <div class="stat-card yellow">
+        <div class="stat-label">Closing This Month</div>
+        <div class="stat-val" id="statClosing">0</div>
+        <div class="stat-sub">Due within 30 days</div>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-label">In Active Pursuit</div>
+        <div class="stat-val" id="statPursuit">0</div>
+        <div class="stat-sub">Pipeline board items</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Set-Aside Eligible</div>
+        <div class="stat-val" id="statSetAside">0</div>
+        <div class="stat-sub">HUBZone · SB · WOSB</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Est. Value</div>
+        <div class="stat-val" id="statValue">$0</div>
+        <div class="stat-sub">Open opportunities</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;">
+      <div>
+        <div class="proposal-section" style="margin-bottom:0">
+          <h2>Top Opportunities Right Now</h2>
+          <div id="dashTopOpps"><div class="loading-state">Loading opportunities…</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="proposal-section" style="margin-bottom:16px">
+          <h2>Sources Connected</h2>
+          <div style="display:flex;flex-direction:column;gap:10px" id="sourceStatus">
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px">
+              <span><span class="source-dot source-sam" style="margin-right:6px"></span>SAM.gov Opportunities</span>
+              <span id="srcSam" style="color:var(--muted);font-size:12px">Not connected</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px">
+              <span><span class="source-dot source-sbir" style="margin-right:6px"></span>SBIR.gov</span>
+              <span id="srcSbir" style="color:var(--green);font-size:12px">✓ Active (RSS)</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px">
+              <span><span class="source-dot source-gsa" style="margin-right:6px"></span>GSA eBuy / Schedules</span>
+              <span style="color:var(--muted);font-size:12px">Manual check</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px">
+              <span><span class="source-dot source-usa" style="margin-right:6px"></span>USASpending.gov</span>
+              <span style="color:var(--green);font-size:12px">✓ Active (API)</span>
+            </div>
+          </div>
+        </div>
+        <div class="proposal-section">
+          <h2>Deadlines This Week</h2>
+          <div id="dashDeadlines" style="font-size:13px;color:var(--muted)">Loading…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPPORTUNITIES TAB -->
+  <div class="tab-panel" id="tab-opportunities">
+    <div class="filter-bar">
+      <input type="text" id="searchInput" placeholder="🔍  Search title, agency, keyword…" oninput="filterOpps()"/>
+      <select id="filterNaics" onchange="filterOpps()">
+        <option value="">All NAICS</option>
+        <option value="541511">541511 — Custom Programming</option>
+        <option value="541512">541512 — Computer Systems Design</option>
+        <option value="541519">541519 — Other Computer Related</option>
+        <option value="518210">518210 — Data Processing / Hosting</option>
+        <option value="541715">541715 — R&D / AI-ML</option>
+      </select>
+      <select id="filterSetAside" onchange="filterOpps()">
+        <option value="">All Set-Asides</option>
+        <option value="SB">Small Business</option>
+        <option value="HUBZone">HUBZone</option>
+        <option value="WOSB">WOSB</option>
+        <option value="8(a)">8(a)</option>
+        <option value="SDVOSB">SDVOSB</option>
+        <option value="FULL">Full & Open</option>
+      </select>
+      <select id="filterSource" onchange="filterOpps()">
+        <option value="">All Sources</option>
+        <option value="SAM.gov">SAM.gov</option>
+        <option value="SBIR">SBIR.gov</option>
+        <option value="USASpending">USASpending</option>
+      </select>
+      <select id="filterScore" onchange="filterOpps()">
+        <option value="">All Fit Scores</option>
+        <option value="high">High Fit (80+)</option>
+        <option value="med">Medium Fit (50–79)</option>
+      </select>
+      <button class="btn btn-primary" onclick="syncAll()"><span id="syncSpinner"></span> Fetch Live</button>
+    </div>
+    <div id="oppCount" style="font-size:12px;color:var(--muted);margin-bottom:10px"></div>
+    <div class="opp-grid" id="oppList"></div>
+  </div>
+
+  <!-- PIPELINE BOARD -->
+  <div class="tab-panel" id="tab-pipeline">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h2 style="font-size:16px;font-weight:600;color:var(--navy)">Capture Pipeline Board</h2>
+      <button class="btn btn-primary btn-sm" onclick="showTab('opportunities')">+ Add from Opportunities</button>
+    </div>
+    <div class="kanban" id="kanbanBoard"></div>
+  </div>
+
+  <!-- PROPOSAL HELPER -->
+  <div class="tab-panel" id="tab-proposal">
+    <div class="proposal-section">
+      <h2>Proposal Response Assistant</h2>
+      <div class="alert alert-info">Select an opportunity from the pipeline or paste an RFP title below to generate a structured proposal outline tailored to your certifications and capabilities.</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Solicitation Number</label>
+          <input type="text" id="propSolNum" placeholder="e.g. 36C10B24R0001"/>
+        </div>
+        <div class="form-group">
+          <label>Opportunity Title</label>
+          <input type="text" id="propTitle" placeholder="e.g. IT Modernization Support Services"/>
+        </div>
+        <div class="form-group">
+          <label>Issuing Agency</label>
+          <input type="text" id="propAgency" placeholder="e.g. Department of Veterans Affairs"/>
+        </div>
+        <div class="form-group">
+          <label>NAICS Code</label>
+          <select id="propNaics">
+            <option value="541511">541511 — Custom Programming</option>
+            <option value="541512">541512 — Computer Systems Design</option>
+            <option value="541519">541519 — Other Computer Related</option>
+            <option value="518210">518210 — Data Processing / Hosting</option>
+            <option value="541715">541715 — R&D / AI-ML</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Set-Aside Type</label>
+          <select id="propSetAside">
+            <option value="HUBZone">HUBZone</option>
+            <option value="SB">Small Business</option>
+            <option value="WOSB">WOSB</option>
+            <option value="Full & Open">Full & Open</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Estimated Value</label>
+          <input type="text" id="propValue" placeholder="e.g. $2.5M"/>
+        </div>
+        <div class="form-group full">
+          <label>Key PWS / SOW Requirements (paste or summarize)</label>
+          <textarea id="propReqs" placeholder="Paste key requirements from the RFP, or describe what the agency needs…"></textarea>
+        </div>
+        <div class="form-group full">
+          <label>Your Relevant Past Performance</label>
+          <textarea id="propPP" placeholder="Describe 1-3 relevant projects: agency, contract value, scope, outcomes…"></textarea>
+        </div>
+      </div>
+      <div style="margin-top:16px;display:flex;gap:10px">
+        <button class="btn btn-primary" onclick="generateOutline()">Generate Proposal Outline</button>
+        <button class="btn btn-outline" onclick="generateChecklist()">Generate Compliance Checklist</button>
+      </div>
+    </div>
+    <div id="proposalOutput"></div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="tab-panel" id="tab-settings">
+    <div class="settings-grid">
+      <div class="settings-card">
+        <h3>🔑 SAM.gov API Key</h3>
+        <div class="alert alert-warning">You need a free API key from <strong>api.data.gov</strong> to pull live opportunities from SAM.gov.</div>
+        <div class="form-group" style="margin-bottom:12px">
+          <label>API Key</label>
+          <input type="password" id="samApiKey" placeholder="Paste your api.data.gov key here"/>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="saveApiKey()">Save & Test Connection</button>
+        <div id="apiTestResult" style="margin-top:10px;font-size:12px"></div>
+        <div style="margin-top:14px;font-size:12px;color:var(--muted);line-height:1.6">
+          <strong>How to get a free SAM.gov API key:</strong><br>
+          1. Go to <a href="https://api.data.gov/signup/" target="_blank" style="color:var(--accent)">api.data.gov/signup</a><br>
+          2. Sign up with your business email<br>
+          3. Confirm via email — key arrives instantly<br>
+          4. Paste it above — this app will use it to pull real-time opportunities
+        </div>
+      </div>
+      <div class="settings-card">
+        <h3>🎯 Your NAICS Codes</h3>
+        <div id="naicsDisplay" style="margin-bottom:12px"></div>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="naicsInput" placeholder="Add NAICS code…" style="flex:1;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px"/>
+          <button class="btn btn-outline btn-sm" onclick="addNaics()">Add</button>
+        </div>
+      </div>
+      <div class="settings-card">
+        <h3>🏢 Company Profile</h3>
+        <div class="form-group" style="margin-bottom:10px">
+          <label>Company Name</label>
+          <input type="text" id="cfgName" placeholder="Your LLC / Inc name"/>
+        </div>
+        <div class="form-group" style="margin-bottom:10px">
+          <label>UEI Number (SAM.gov)</label>
+          <input type="text" id="cfgUei" placeholder="Your Unique Entity ID"/>
+        </div>
+        <div class="form-group" style="margin-bottom:10px">
+          <label>CAGE Code</label>
+          <input type="text" id="cfgCage" placeholder="5-character CAGE"/>
+        </div>
+        <div class="form-group" style="margin-bottom:14px">
+          <label>Set-Asides (select all that apply)</label>
+          <select id="cfgCerts" multiple style="height:90px">
+            <option value="SB" selected>Small Business</option>
+            <option value="HUBZone" selected>HUBZone</option>
+            <option value="WOSB">WOSB</option>
+            <option value="8(a)">8(a)</option>
+            <option value="SDVOSB">SDVOSB</option>
+          </select>
+        </div>
+        <button class="btn btn-green btn-sm" onclick="saveProfile()">Save Profile</button>
+      </div>
+      <div class="settings-card">
+        <h3>📡 Data Sources</h3>
+        <div style="display:flex;flex-direction:column;gap:12px;font-size:13px">
+          <div>
+            <strong>SAM.gov</strong> — Federal contract opportunities<br>
+            <span style="color:var(--muted);font-size:12px">Requires API key above. Covers all civilian + DoD solicitations.</span>
+          </div>
+          <div>
+            <strong>SBIR.gov</strong> — Small business R&D grants<br>
+            <span style="color:var(--muted);font-size:12px">AI/ML and data engineering topics. Loaded via public feed.</span>
+          </div>
+          <div>
+            <strong>USASpending.gov</strong> — Awards intelligence<br>
+            <span style="color:var(--muted);font-size:12px">See who's winning similar contracts, sizes, agencies.</span>
+          </div>
+          <div>
+            <strong>GSA eBuy</strong> — Schedule task orders<br>
+            <span style="color:var(--muted);font-size:12px">Requires GSA Schedule. Links to eBuy login for manual check.</span>
+          </div>
+          <div>
+            <strong>beta.SAM.gov Search</strong><br>
+            <a href="https://sam.gov/search/?index=opp&page=1&pageSize=25&sort=-modifiedDate&sfm%5BsimpleSearch%5D%5BkeywordRadio%5D=ALL&sfm%5BsimpleSearch%5D%5BkeywordTerm%5D=digital+services" target="_blank" style="color:var(--accent);font-size:12px">Open SAM.gov in browser →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL OVERLAY -->
+<div class="detail-overlay" id="detailOverlay" onclick="closeDetail(event)">
+  <div class="detail-panel" id="detailPanel">
+    <button class="detail-close" onclick="closeDetailPanel()">×</button>
+    <div id="detailContent"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA LAYER
+// ============================================================
+let CONFIG = {
+  apiKey: localStorage.getItem('samApiKey') || '',
+  naics: ['541511','541512','541519','518210','541715'],
+  certifications: ['SB','HUBZone','WOSB'],
+  companyName: localStorage.getItem('companyName') || ''
+};
+
+let ALL_OPPS = [];
+let PIPELINE = JSON.parse(localStorage.getItem('pipeline') || '{"Awareness":[],"Qualify":[],"Pursue":[],"Propose":[],"Award":[]}');
+
+// ============================================================
+// MOCK DATA (used when no API key / CORS fallback)
+// ============================================================
+const MOCK_OPPS = [
+  { id:'SAM-001', source:'SAM.gov', title:'Digital Transformation and IT Modernization Support — Department of Veterans Affairs', agency:'Dept. of Veterans Affairs', naics:'541512', setAside:'HUBZone', type:'Solicitation', postedDate:'2026-03-28', dueDate:'2026-04-25', value:4500000, description:'The VA seeks a contractor to provide agile software development, cloud migration, and IT modernization support for legacy healthcare systems. Contractor shall provide full-stack development (React, Python, AWS GovCloud), DevSecOps pipeline management, and Section 508 compliance testing.', score:94, solNum:'36C10B26R0089', url:'https://sam.gov' },
+  { id:'SAM-002', source:'SAM.gov', title:'Data Analytics and Visualization Platform — CMS Innovation Center', agency:'Centers for Medicare & Medicaid Services', naics:'518210', setAside:'SB', type:'RFQ', postedDate:'2026-04-01', dueDate:'2026-04-30', value:2800000, description:'CMS seeks data engineering and BI visualization services to modernize their reporting infrastructure. Work includes ETL pipeline design, Tableau/Power BI dashboards, and real-time data streaming on AWS.', score:88, solNum:'75FCMC24R0021', url:'https://sam.gov' },
+  { id:'SAM-003', source:'SAM.gov', title:'AI/ML Model Development and Deployment — DHS Science & Technology', agency:'Dept. of Homeland Security', naics:'541715', setAside:'WOSB', type:'Solicitation', postedDate:'2026-04-03', dueDate:'2026-05-15', value:1900000, description:'DHS S&T Directorate requires machine learning model development for threat pattern recognition. Python/TensorFlow stack, MLOps pipeline, FedRAMP-compliant cloud deployment required.', score:91, solNum:'70RSAT24R00012', url:'https://sam.gov' },
+  { id:'SAM-004', source:'SAM.gov', title:'Website Redesign and Accessibility Compliance — GSA Office of Customer Experience', agency:'General Services Administration', naics:'541511', setAside:'HUBZone', type:'RFP', postedDate:'2026-04-05', dueDate:'2026-05-02', value:750000, description:'GSA requires a contractor to redesign their public-facing website portfolio ensuring WCAG 2.1 AA compliance, modern UX design, and CMS integration. React/Next.js preferred.', score:85, solNum:'47QRAA26R0003', url:'https://sam.gov' },
+  { id:'SAM-005', source:'SAM.gov', title:'Cloud Infrastructure Management and DevSecOps — DoD DISA', agency:'Defense Information Systems Agency', naics:'541512', setAside:'SB', type:'Solicitation', postedDate:'2026-03-20', dueDate:'2026-04-18', value:8200000, description:'DISA requires DevSecOps support for cloud infrastructure across AWS and Azure environments. Kubernetes orchestration, IaC (Terraform), CI/CD pipeline management, and ATO support.', score:72, solNum:'HC102825R0019', url:'https://sam.gov' },
+  { id:'SAM-006', source:'SAM.gov', title:'IT Consulting and Program Management Support — HHS Office of the CIO', agency:'Dept. of Health & Human Services', naics:'541519', setAside:'WOSB', type:'Sources Sought', postedDate:'2026-04-07', dueDate:'2026-04-21', value:1200000, description:'HHS OCIO seeks IT program management and enterprise architecture consulting support. PMO standup, agile coaching, IT portfolio management, and stakeholder communications.', score:79, solNum:'75N98026R00031', url:'https://sam.gov' },
+  { id:'SBIR-001', source:'SBIR', title:'Phase II: Machine Learning for Federal Financial Fraud Detection', agency:'Dept. of Treasury / IRS', naics:'541715', setAside:'SB', type:'SBIR Phase II', postedDate:'2026-03-15', dueDate:'2026-05-01', value:1000000, description:'SBIR Phase II award opportunity for AI/ML system to detect anomalous financial transactions across federal payment systems. Phase I experience not required for direct-to-Phase-II applicants.', score:82, solNum:'SBIR-T-2026-002', url:'https://sbir.gov' },
+  { id:'SBIR-002', source:'SBIR', title:'AI-Powered Natural Language Processing for Veterans Benefits Processing', agency:'Dept. of Veterans Affairs', naics:'541715', setAside:'SB', type:'SBIR Phase I', postedDate:'2026-04-01', dueDate:'2026-05-20', value:250000, description:'VA seeks NLP solutions to automate benefits claim classification and routing, reducing processing time for veterans. GPT/LLM integration, VA API compatibility required.', score:89, solNum:'SBIR-VA-2026-004', url:'https://sbir.gov' },
+  { id:'USA-001', source:'USASpending', title:'Enterprise Data Warehouse Modernization — Dept. of Education', agency:'Dept. of Education', naics:'518210', setAside:'HUBZone', type:'Contract Award Intel', postedDate:'2026-03-10', dueDate:'2026-06-30', value:3400000, description:'Recompete opportunity based on expiring contract award. Current incumbent (small business) held $3.4M contract for data warehouse modernization. Recompete expected Q2 2026.', score:76, solNum:'ED-OIG-RECOMP-26', url:'https://usaspending.gov' },
+  { id:'SAM-007', source:'SAM.gov', title:'Agile Software Development Support — SSA Office of Systems', agency:'Social Security Administration', naics:'541511', setAside:'SB', type:'RFQ', postedDate:'2026-04-08', dueDate:'2026-05-10', value:5600000, description:'SSA requires agile software development support for benefits processing system modernization. Java Spring Boot backend, React frontend, Oracle/PostgreSQL databases, Section 508 compliance.', score:83, solNum:'28320026R00007', url:'https://sam.gov' },
+];
+
+// ============================================================
+// SCORING ENGINE
+// ============================================================
+function scoreOpp(opp) {
+  // Scoring weights: NAICS match, set-aside match, agency familiarity, value fit, type
+  let score = 0;
+  if (CONFIG.naics.includes(opp.naics)) score += 30;
+  else score += 10;
+  const certMatch = CONFIG.certifications.some(c => opp.setAside && opp.setAside.includes(c));
+  if (certMatch) score += 25;
+  else if (opp.setAside === 'FULL' || opp.setAside === '') score += 10;
+  if (opp.value >= 500000 && opp.value <= 10000000) score += 15;
+  if (opp.value > 100000) score += 5;
+  if (opp.type === 'Solicitation' || opp.type === 'RFP' || opp.type === 'RFQ') score += 10;
+  if (opp.source === 'SBIR') score += 5;
+  // Keyword boost
+  const kw = (opp.title + ' ' + opp.description).toLowerCase();
+  ['digital','ai','ml','data','cloud','agile','devops','python','react','aws'].forEach(k => {
+    if (kw.includes(k)) score += 2;
+  });
+  return Math.min(score, 99);
+}
+
+// ============================================================
+// DATA FETCH — GitHub Pages version
+// Reads from data/opportunities.json (committed nightly by GitHub Actions).
+// Falls back to embedded mock data if the file isn't available yet.
+// ============================================================
+async function fetchSamGov() {
+  try {
+    const res = await fetch('./data/opportunities.json');
+    if (!res.ok) throw new Error('data file not found');
+    const json = await res.json();
+    const opps = json.opportunities || [];
+    const meta = json.meta || {};
+    // Show last-updated time in badge
+    if (meta.lastUpdated) {
+      const d = new Date(meta.lastUpdated);
+      document.getElementById('apiStatusBadge').textContent =
+        `✓ Updated ${d.toLocaleDateString('en-US', {month:'short', day:'numeric'})}`;
+      document.getElementById('apiStatusBadge').className = 'api-badge connected';
+      document.getElementById('srcSam').textContent = `✓ Live (${opps.length})`;
+      document.getElementById('srcSam').style.color = 'var(--green)';
+    }
+    return opps;
+  } catch(e) {
+    console.warn('Could not load data/opportunities.json — using mock data:', e.message);
+    return null;
+  }
+}
+
+// ============================================================
+// MAIN SYNC
+// ============================================================
+async function syncAll() {
+  const btn = document.getElementById('syncBtn');
+  btn.innerHTML = '<span class="spinner"></span> Syncing…';
+  let opps = [];
+  const live = await fetchSamGov();
+  if (live && live.length > 0) {
+    opps = live;
+    document.getElementById('srcSam').textContent = '✓ Live (' + live.length + ')';
+    document.getElementById('srcSam').style.color = 'var(--green)';
+    document.getElementById('apiStatusBadge').textContent = '⚡ SAM.gov: Connected';
+    document.getElementById('apiStatusBadge').className = 'api-badge connected';
+  } else {
+    opps = MOCK_OPPS;
+    document.getElementById('srcSam').textContent = '⚠ Using seed data (Action pending)';
+    document.getElementById('srcSam').style.color = 'var(--yellow)';
+  }
+  // Score all
+  ALL_OPPS = opps.map(o => ({ ...o, score: o.score || scoreOpp(o) }));
+  // Sort by score
+  ALL_OPPS.sort((a,b) => b.score - a.score);
+  renderOpps(ALL_OPPS);
+  updateStats();
+  renderDashTop();
+  renderDeadlines();
+  btn.textContent = '↺ Sync Now';
+}
+
+// ============================================================
+// RENDER OPPORTUNITIES
+// ============================================================
+function renderOpps(opps) {
+  const list = document.getElementById('oppList');
+  const count = document.getElementById('oppCount');
+  count.textContent = opps.length + ' opportunities found';
+  if (!opps.length) { list.innerHTML = '<div class="loading-state">No opportunities match your filters.</div>'; return; }
+  list.innerHTML = opps.map(o => oppCard(o)).join('');
+}
+
+function oppCard(o) {
+  const daysLeft = daysUntil(o.dueDate);
+  const deadlineClass = daysLeft !== null ? (daysLeft < 7 ? 'deadline-urgent' : daysLeft < 21 ? 'deadline-soon' : '') : '';
+  const scoreClass = o.score >= 80 ? 'score-high' : o.score >= 50 ? 'score-med' : 'score-low';
+  const sourceColor = o.source === 'SAM.gov' ? 'source-sam' : o.source === 'SBIR' ? 'source-sbir' : 'source-usa';
+  return `<div class="opp-card" onclick="openDetail('${o.id}')">
+    <div class="opp-header">
+      <div class="opp-title">${o.title}</div>
+      <div class="opp-score"><div class="score-circle ${scoreClass}">${o.score}</div></div>
+    </div>
+    <div class="opp-meta">
+      <span class="tag tag-agency">🏛 ${o.agency}</span>
+      <span class="tag tag-naics">📌 ${o.naics}</span>
+      ${o.setAside ? `<span class="tag tag-setaside">✓ ${o.setAside}</span>` : ''}
+      <span class="tag tag-type">${o.type}</span>
+      <span class="tag tag-source"><span class="source-dot ${sourceColor}" style="margin-right:4px"></span>${o.source}</span>
+      ${o.value > 0 ? `<span class="tag" style="background:#f5f5f5;color:#555">💰 ${fmtMoney(o.value)}</span>` : ''}
+    </div>
+    <div class="opp-footer">
+      <div class="opp-dates">
+        Posted: <strong>${o.postedDate}</strong> &nbsp;·&nbsp;
+        Due: <strong class="${deadlineClass}">${o.dueDate || 'TBD'}${daysLeft !== null ? ` (${daysLeft}d)` : ''}</strong>
+        ${o.solNum ? ` &nbsp;·&nbsp; <span style="color:var(--muted)">${o.solNum}</span>` : ''}
+      </div>
+      <div class="opp-actions" onclick="event.stopPropagation()">
+        <button class="btn btn-outline btn-sm" onclick="addToPipeline('${o.id}')">+ Pipeline</button>
+        <a href="${o.url}" target="_blank" class="btn btn-outline btn-sm">View →</a>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ============================================================
+// FILTER
+// ============================================================
+function filterOpps() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const naics = document.getElementById('filterNaics').value;
+  const setAside = document.getElementById('filterSetAside').value;
+  const source = document.getElementById('filterSource').value;
+  const scoreF = document.getElementById('filterScore').value;
+  let filtered = ALL_OPPS.filter(o => {
+    if (q && !(o.title.toLowerCase().includes(q) || o.agency.toLowerCase().includes(q) || (o.description||'').toLowerCase().includes(q))) return false;
+    if (naics && o.naics !== naics) return false;
+    if (setAside && !(o.setAside||'').includes(setAside)) return false;
+    if (source && o.source !== source) return false;
+    if (scoreF === 'high' && o.score < 80) return false;
+    if (scoreF === 'med' && (o.score < 50 || o.score >= 80)) return false;
+    return true;
+  });
+  renderOpps(filtered);
+}
+
+// ============================================================
+// DETAIL PANEL
+// ============================================================
+function openDetail(id) {
+  const o = ALL_OPPS.find(x => x.id === id);
+  if (!o) return;
+  const daysLeft = daysUntil(o.dueDate);
+  document.getElementById('detailContent').innerHTML = `
+    <h2 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:16px;line-height:1.4">${o.title}</h2>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
+      <span class="tag tag-agency">🏛 ${o.agency}</span>
+      <span class="tag tag-setaside">✓ ${o.setAside}</span>
+      <span class="tag tag-naics">${o.naics}</span>
+      <span class="tag tag-type">${o.type}</span>
+      ${o.value ? `<span class="tag" style="background:#f5f5f5;color:#555">💰 ${fmtMoney(o.value)}</span>` : ''}
+    </div>
+    <div class="detail-section">
+      <h3>Fit Score: ${o.score}/99</h3>
+      <div class="score-bar-wrap"><div class="score-bar" style="width:${o.score}%"></div></div>
+      <div style="margin-top:12px">
+        <div class="criteria-row"><span>NAICS Code Match</span><span style="color:${CONFIG.naics.includes(o.naics)?'var(--green)':'var(--yellow)'}">${CONFIG.naics.includes(o.naics)?'✓ Match':'⚠ Partial'}</span></div>
+        <div class="criteria-row"><span>Set-Aside Eligible</span><span style="color:${CONFIG.certifications.some(c=>o.setAside&&o.setAside.includes(c))?'var(--green)':'var(--muted)'}">${CONFIG.certifications.some(c=>o.setAside&&o.setAside.includes(c))?'✓ Eligible':'—'}</span></div>
+        <div class="criteria-row"><span>Contract Value Range</span><span style="color:${o.value>=500000&&o.value<=10000000?'var(--green)':'var(--yellow)'}">${o.value>=500000&&o.value<=10000000?'✓ Good fit':'⚠ Check sizing'}</span></div>
+        <div class="criteria-row"><span>Days Until Due</span><span style="color:${daysLeft!==null&&daysLeft<7?'var(--red)':daysLeft<21?'var(--yellow)':'var(--green)'}">${daysLeft !== null ? daysLeft + ' days' : 'TBD'}</span></div>
+      </div>
+    </div>
+    <div class="detail-section">
+      <h3>Key Dates</h3>
+      <div class="criteria-row"><span>Posted</span><span>${o.postedDate}</span></div>
+      <div class="criteria-row"><span>Proposal Due</span><span>${o.dueDate||'TBD'}</span></div>
+      <div class="criteria-row"><span>Sol. Number</span><span>${o.solNum||'—'}</span></div>
+    </div>
+    <div class="detail-section">
+      <h3>Description</h3>
+      <p style="font-size:13px;line-height:1.7;color:var(--text)">${o.description||'No description available.'}</p>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px">
+      <button class="btn btn-primary" onclick="addToPipelineAndClose('${o.id}')">+ Add to Pipeline</button>
+      <button class="btn btn-outline" onclick="loadIntoProposal('${o.id}')">✍️ Start Proposal</button>
+      <a href="${o.url}" target="_blank" class="btn btn-outline">View on ${o.source} →</a>
+    </div>
+  `;
+  document.getElementById('detailOverlay').classList.add('open');
+}
+function closeDetail(e) { if (e.target === document.getElementById('detailOverlay')) closeDetailPanel(); }
+function closeDetailPanel() { document.getElementById('detailOverlay').classList.remove('open'); }
+
+// ============================================================
+// PIPELINE BOARD
+// ============================================================
+function addToPipeline(id) {
+  const o = ALL_OPPS.find(x => x.id === id);
+  if (!o) return;
+  if (!PIPELINE.Awareness) PIPELINE.Awareness = [];
+  if (PIPELINE.Awareness.some(x => x.id === id)) { alert('Already in pipeline!'); return; }
+  PIPELINE.Awareness.push({ id: o.id, title: o.title, agency: o.agency, value: o.value, dueDate: o.dueDate, score: o.score });
+  savePipeline();
+  renderKanban();
+  updateStats();
+  alert('Added to Awareness stage!');
+}
+function addToPipelineAndClose(id) { addToPipeline(id); closeDetailPanel(); showTab('pipeline'); }
+
+function renderKanban() {
+  const stages = ['Awareness','Qualify','Pursue','Propose','Award'];
+  const colors = { Awareness:'#6b7a8d', Qualify:'#2d8cf0', Pursue:'#f39c12', Propose:'#8e44ad', Award:'#27ae60' };
+  document.getElementById('kanbanBoard').innerHTML = stages.map(stage => `
+    <div class="kanban-col">
+      <div class="kanban-col-header">
+        <span style="color:${colors[stage]}">${stage.toUpperCase()}</span>
+        <span class="kanban-count">${(PIPELINE[stage]||[]).length}</span>
+      </div>
+      ${(PIPELINE[stage]||[]).map(item => `
+        <div class="kanban-card" onclick="openDetail('${item.id}')">
+          <div class="kanban-card-title">${item.title.substring(0,70)}${item.title.length>70?'…':''}</div>
+          <div class="kanban-card-meta">${item.agency} · ${fmtMoney(item.value)}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+            <span style="font-size:10px;color:var(--muted)">Due: ${item.dueDate||'TBD'}</span>
+            ${stage!=='Award'?`<button onclick="event.stopPropagation();moveStage('${item.id}','${stage}')" style="font-size:10px;background:none;border:1px solid var(--border);border-radius:4px;padding:2px 6px;cursor:pointer;color:var(--muted)">→ Next</button>`:''}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+function moveStage(id, currentStage) {
+  const stages = ['Awareness','Qualify','Pursue','Propose','Award'];
+  const idx = stages.indexOf(currentStage);
+  if (idx < stages.length - 1) {
+    const nextStage = stages[idx+1];
+    const item = (PIPELINE[currentStage]||[]).find(x => x.id === id);
+    if (item) {
+      PIPELINE[currentStage] = PIPELINE[currentStage].filter(x => x.id !== id);
+      if (!PIPELINE[nextStage]) PIPELINE[nextStage] = [];
+      PIPELINE[nextStage].push(item);
+      savePipeline();
+      renderKanban();
+      updateStats();
+    }
+  }
+}
+function savePipeline() { localStorage.setItem('pipeline', JSON.stringify(PIPELINE)); }
+
+// ============================================================
+// STATS
+// ============================================================
+function updateStats() {
+  const open = ALL_OPPS.length;
+  const high = ALL_OPPS.filter(o => o.score >= 80).length;
+  const closing = ALL_OPPS.filter(o => { const d = daysUntil(o.dueDate); return d !== null && d <= 30; }).length;
+  const pursuit = Object.values(PIPELINE).flat().length;
+  const setAside = ALL_OPPS.filter(o => CONFIG.certifications.some(c => (o.setAside||'').includes(c))).length;
+  const totalVal = ALL_OPPS.reduce((a,o) => a + (o.value||0), 0);
+  document.getElementById('statOpen').textContent = open;
+  document.getElementById('statHigh').textContent = high;
+  document.getElementById('statClosing').textContent = closing;
+  document.getElementById('statPursuit').textContent = pursuit;
+  document.getElementById('statSetAside').textContent = setAside;
+  document.getElementById('statValue').textContent = fmtMoney(totalVal);
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function renderDashTop() {
+  const top = ALL_OPPS.slice(0,4);
+  document.getElementById('dashTopOpps').innerHTML = top.map(o => `
+    <div style="padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="showTab('opportunities');openDetail('${o.id}')">
+      <div style="font-weight:500;font-size:13px;margin-bottom:3px">${o.title.substring(0,80)}…</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="tag tag-agency" style="font-size:10px">${o.agency}</span>
+        <span class="tag tag-setaside" style="font-size:10px">${o.setAside}</span>
+        <span style="font-size:11px;color:var(--muted);margin-left:auto">Score: <strong style="color:var(--green)">${o.score}</strong></span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderDeadlines() {
+  const soon = ALL_OPPS.filter(o => { const d = daysUntil(o.dueDate); return d !== null && d <= 14; }).sort((a,b) => daysUntil(a.dueDate) - daysUntil(b.dueDate));
+  if (!soon.length) { document.getElementById('dashDeadlines').textContent = 'No deadlines in the next 14 days.'; return; }
+  document.getElementById('dashDeadlines').innerHTML = soon.slice(0,5).map(o => {
+    const d = daysUntil(o.dueDate);
+    return `<div style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between">
+      <span>${o.title.substring(0,50)}…</span>
+      <span style="color:${d<7?'var(--red)':'var(--yellow)'};font-weight:600;white-space:nowrap;margin-left:8px">${d}d</span>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// PROPOSAL HELPER
+// ============================================================
+function loadIntoProposal(id) {
+  const o = ALL_OPPS.find(x => x.id === id);
+  if (!o) return;
+  closeDetailPanel();
+  showTab('proposal');
+  document.getElementById('propTitle').value = o.title;
+  document.getElementById('propSolNum').value = o.solNum || '';
+  document.getElementById('propAgency').value = o.agency;
+  document.getElementById('propValue').value = fmtMoney(o.value);
+  document.getElementById('propReqs').value = o.description || '';
+  document.getElementById('propNaics').value = o.naics;
+  document.getElementById('propSetAside').value = o.setAside || '';
+}
+
+function generateOutline() {
+  const title = document.getElementById('propTitle').value || 'Untitled Opportunity';
+  const agency = document.getElementById('propAgency').value || 'Agency';
+  const setAside = document.getElementById('propSetAside').value;
+  const value = document.getElementById('propValue').value;
+  const reqs = document.getElementById('propReqs').value;
+  const pp = document.getElementById('propPP').value;
+  const naics = document.getElementById('propNaics').value;
+  document.getElementById('proposalOutput').innerHTML = `
+    <div class="proposal-section">
+      <h2>📋 Proposal Outline — ${title}</h2>
+      <div class="alert alert-success">Outline generated based on your company profile (${setAside}, NAICS ${naics}). Fill in each section with your specific details.</div>
+      <div style="font-size:14px;line-height:1.9">
+        <p><strong>VOLUME I — TECHNICAL APPROACH</strong></p>
+        <ol style="margin-left:20px;margin-bottom:16px">
+          <li><strong>Understanding of the Requirement</strong><br><span style="color:var(--muted);font-size:13px">Demonstrate deep understanding of ${agency}'s mission and the specific challenge described in the PWS. Cite specific pain points from the solicitation.</span></li>
+          <li><strong>Technical Solution Overview</strong><br><span style="color:var(--muted);font-size:13px">High-level architecture diagram, technology stack, and methodology (Agile/Scrum/Kanban). For NAICS ${naics}: tailor to relevant tech stack.</span></li>
+          <li><strong>Implementation Methodology</strong><br><span style="color:var(--muted);font-size:13px">Phase-by-phase plan: Discovery → Design → Development → Testing → Deployment → O&M. Include sprint cadence, definition of done, and key milestones.</span></li>
+          <li><strong>Security & Compliance Plan</strong><br><span style="color:var(--muted);font-size:13px">FedRAMP, FISMA, ATO pathway. Section 508 if applicable. NIST 800-53 controls relevant to scope.</span></li>
+          <li><strong>Quality Assurance</strong><br><span style="color:var(--muted);font-size:13px">QA/QC methodology, testing strategy (unit, integration, UAT), KPIs, and SLAs.</span></li>
+        </ol>
+        <p><strong>VOLUME II — MANAGEMENT APPROACH</strong></p>
+        <ol style="margin-left:20px;margin-bottom:16px">
+          <li><strong>Program Management Plan</strong><br><span style="color:var(--muted);font-size:13px">Org chart with named key personnel, RACI matrix, communication plan, risk register template.</span></li>
+          <li><strong>Staffing Plan</strong><br><span style="color:var(--muted);font-size:13px">Labor categories, qualifications, availability. Transition plan if recompete.</span></li>
+          <li><strong>Small Business / ${setAside} Commitment</strong><br><span style="color:var(--muted);font-size:13px">Highlight your ${setAside} status, HUBZone location impact on local economy, and any teaming partners.</span></li>
+        </ol>
+        <p><strong>VOLUME III — PAST PERFORMANCE</strong></p>
+        <ol style="margin-left:20px;margin-bottom:16px">
+          <li><strong>Relevant Project #1</strong><br><span style="color:var(--muted);font-size:13px">${pp ? pp.substring(0,200) + '…' : '[Insert relevant contract: Agency | Contract # | Value | Period | Scope | Outcome | Reference contact]'}</span></li>
+          <li><strong>Relevant Project #2</strong></li>
+          <li><strong>Relevant Project #3</strong></li>
+        </ol>
+        <p><strong>VOLUME IV — PRICE / COST</strong></p>
+        <ol style="margin-left:20px;margin-bottom:16px">
+          <li><strong>Labor Rate Table</strong><br><span style="color:var(--muted);font-size:13px">List all labor categories with hourly rates. Justify against market data (Bureau of Labor Statistics, GSA rates).</span></li>
+          <li><strong>ODC / Materials</strong></li>
+          <li><strong>Price Summary</strong><br><span style="color:var(--muted);font-size:13px">Estimated total: ${value || 'TBD'}. Breakout by CLIN if required.</span></li>
+        </ol>
+      </div>
+      <button class="btn btn-outline" onclick="generateChecklist()">Generate Compliance Checklist →</button>
+    </div>
+  `;
+}
+
+function generateChecklist() {
+  document.getElementById('proposalOutput').innerHTML += `
+    <div class="proposal-section">
+      <h2>✅ Proposal Compliance Checklist</h2>
+      <ul class="checklist">
+        <li><input type="checkbox" id="c1"><label for="c1">SAM.gov registration current (active, not expired)</label></li>
+        <li><input type="checkbox" id="c2"><label for="c2">UEI and CAGE code verified and match solicitation requirements</label></li>
+        <li><input type="checkbox" id="c3"><label for="c3">HUBZone certification active on SAM.gov at time of submission</label></li>
+        <li><input type="checkbox" id="c4"><label for="c4">NAICS code size standard confirmed (check SBA Table of Small Business Size Standards)</label></li>
+        <li><input type="checkbox" id="c5"><label for="c5">All volumes submitted in correct order and format (PDF/Word per solicitation)</label></li>
+        <li><input type="checkbox" id="c6"><label for="c6">Page limits strictly followed for each volume</label></li>
+        <li><input type="checkbox" id="c7"><label for="c7">Font, margin, and formatting requirements met</label></li>
+        <li><input type="checkbox" id="c8"><label for="c8">All required certifications and reps in Section K completed</label></li>
+        <li><input type="checkbox" id="c9"><label for="c9">SF-1449 or SF-33 signed (if required)</label></li>
+        <li><input type="checkbox" id="c10"><label for="c10">Past performance references contacted and given heads up</label></li>
+        <li><input type="checkbox" id="c11"><label for="c11">Submitted via correct portal (SAM.gov, email, or specified system) before deadline</label></li>
+        <li><input type="checkbox" id="c12"><label for="c12">Submitted in all required file formats and sizes</label></li>
+        <li><input type="checkbox" id="c13"><label for="c13">Key Personnel resumes included (if required)</label></li>
+        <li><input type="checkbox" id="c14"><label for="c14">Subcontracting plan submitted (if contract ≥ $750K)</label></li>
+        <li><input type="checkbox" id="c15"><label for="c15">Price/Cost narrative explains all assumptions and escalation</label></li>
+        <li><input type="checkbox" id="c16"><label for="c16">Section 508 compliance statement included (if IT work)</label></li>
+        <li><input type="checkbox" id="c17"><label for="c17">FAR/DFARS clauses reviewed — flag any exceptions needed</label></li>
+        <li><input type="checkbox" id="c18"><label for="c18">Received and incorporated any amendments to the solicitation</label></li>
+        <li><input type="checkbox" id="c19"><label for="c19">Submitted Q&A questions during Q&A window</label></li>
+        <li><input type="checkbox" id="c20"><label for="c20">Final read-through by a non-author (fresh eyes review)</label></li>
+      </ul>
+    </div>
+  `;
+}
+
+// ============================================================
+// SETTINGS
+// ============================================================
+function saveApiKey() {
+  const key = document.getElementById('samApiKey').value.trim();
+  if (!key) { document.getElementById('apiTestResult').innerHTML = '<span style="color:var(--red)">Please enter an API key.</span>'; return; }
+  CONFIG.apiKey = key;
+  localStorage.setItem('samApiKey', key);
+  document.getElementById('apiTestResult').innerHTML = '<span style="color:var(--green)">✓ Saved. Click "Sync Now" to test live data.</span>';
+  document.getElementById('apiStatusBadge').textContent = '⚡ SAM.gov: Key Saved';
+  document.getElementById('apiStatusBadge').className = 'api-badge';
+}
+
+function saveProfile() {
+  CONFIG.companyName = document.getElementById('cfgName').value;
+  localStorage.setItem('companyName', CONFIG.companyName);
+  const opts = document.getElementById('cfgCerts').selectedOptions;
+  CONFIG.certifications = Array.from(opts).map(o => o.value);
+  alert('Profile saved!');
+}
+
+function renderNaics() {
+  document.getElementById('naicsDisplay').innerHTML = CONFIG.naics.map(n => `
+    <span class="naics-pill">${n}<button onclick="removeNaics('${n}')">×</button></span>
+  `).join('');
+}
+function addNaics() {
+  const val = document.getElementById('naicsInput').value.trim();
+  if (val && !CONFIG.naics.includes(val)) { CONFIG.naics.push(val); renderNaics(); document.getElementById('naicsInput').value = ''; }
+}
+function removeNaics(n) { CONFIG.naics = CONFIG.naics.filter(x => x !== n); renderNaics(); }
+
+// ============================================================
+// UTILS
+// ============================================================
+function fmtMoney(v) {
+  if (!v || v === 0) return '—';
+  if (v >= 1000000) return '$' + (v/1000000).toFixed(1) + 'M';
+  if (v >= 1000) return '$' + (v/1000).toFixed(0) + 'K';
+  return '$' + v;
+}
+function daysUntil(dateStr) {
+  if (!dateStr) return null;
+  const d = new Date(dateStr);
+  const now = new Date();
+  const diff = Math.round((d - now) / (1000*60*60*24));
+  return isNaN(diff) ? null : diff;
+}
+
+// ============================================================
+// TABS
+// ============================================================
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const names = ['dashboard','opportunities','pipeline','proposal','settings'];
+    t.classList.toggle('active', names[i] === name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'pipeline') renderKanban();
+}
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('DOMContentLoaded', () => {
+  renderNaics();
+  if (CONFIG.apiKey) {
+    document.getElementById('samApiKey').value = CONFIG.apiKey;
+    document.getElementById('apiStatusBadge').textContent = '⚡ SAM.gov: Key Loaded';
+  }
+  syncAll();
+});
+</script>
+</body>
+</html>
