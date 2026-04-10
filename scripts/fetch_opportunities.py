@@ -60,8 +60,7 @@ def fetch_sam() -> list:
 
     url = (
         f"https://api.sam.gov/opportunities/v2/search"
-        f"?api_key={urllib.parse.quote(API_KEY)}"
-        f"&limit=100"
+        f"?limit=100"
         f"&postedFrom={urllib.parse.quote(from_dt)}"
         f"&postedTo={urllib.parse.quote(to_dt)}"
         f"&ptype=o,p,k,r,s"
@@ -70,7 +69,10 @@ def fetch_sam() -> list:
 
     print(f"Fetching SAM.gov: {url[:80]}…")
     try:
-        req  = urllib.request.Request(url, headers={"User-Agent": "GovConPipeline/1.0"})
+        req  = urllib.request.Request(url, headers={
+            "User-Agent": "GovConPipeline/1.0",
+            "X-Api-Key":  API_KEY,
+        })
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = json.loads(resp.read())
     except Exception as e:
@@ -109,7 +111,7 @@ def fetch_sbir() -> list:
     keywords = ["artificial intelligence", "data analytics", "software development", "cloud computing"]
     opps = []
     for kw in keywords[:2]:  # limit to 2 to keep run fast
-        url = f"https://www.sbir.gov/api/solicitations.json?keyword={urllib.parse.quote(kw)}&rows=10&open=1"
+        url = f"https://api.www.sbir.gov/public/api/solicitations?keyword={urllib.parse.quote(kw)}&rows=10&open=1"
         try:
             req = urllib.request.Request(url, headers={"User-Agent": "GovConPipeline/1.0"})
             with urllib.request.urlopen(req, timeout=15) as resp:
