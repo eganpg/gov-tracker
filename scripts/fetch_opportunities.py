@@ -7,6 +7,7 @@ Requires SAM_API_KEY environment variable (set as GitHub Secret).
 
 import os
 import json
+import time
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -112,7 +113,9 @@ def fetch_sam() -> list:
 def fetch_sbir() -> list:
     keywords = ["artificial intelligence", "data analytics", "software development", "cloud computing"]
     opps = []
-    for kw in keywords[:2]:  # limit to 2 to keep run fast
+    for i, kw in enumerate(keywords[:2]):  # limit to 2 to keep run fast
+        if i > 0:
+            time.sleep(5)  # avoid rate limiting between requests
         url = f"https://api.www.sbir.gov/public/api/solicitations?keyword={urllib.parse.quote(kw)}&rows=10&open=1"
         try:
             req = urllib.request.Request(url, headers={"User-Agent": "GovConPipeline/1.0"})
