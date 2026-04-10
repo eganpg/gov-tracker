@@ -57,7 +57,9 @@ def fetch_sam() -> list:
     today    = datetime.now(timezone.utc)
     from_dt  = (today - timedelta(days=60)).strftime("%m/%d/%Y")
     to_dt    = today.strftime("%m/%d/%Y")
-    naics_q  = ",".join(NAICS_CODES)
+
+    # Pass each NAICS code as a separate ncode param (comma-separated not supported)
+    ncode_params = "&".join(f"ncode={n}" for n in NAICS_CODES)
 
     url = (
         f"https://api.sam.gov/prod/opportunities/v2/search"
@@ -65,8 +67,8 @@ def fetch_sam() -> list:
         f"&limit=100"
         f"&postedFrom={urllib.parse.quote(from_dt)}"
         f"&postedTo={urllib.parse.quote(to_dt)}"
-        f"&ptype=o,p,k,r,s"
-        f"&ncode={urllib.parse.quote(naics_q)}"
+        f"&ptype=o&ptype=p&ptype=k&ptype=r&ptype=s"
+        f"&{ncode_params}"
     )
 
     print(f"Fetching SAM.gov: {url[:80]}…")
@@ -111,34 +113,31 @@ def fetch_sam() -> list:
 
 # ── SBIR Fetch ────────────────────────────────────────────────
 def fetch_sbir() -> list:
-    keywords = ["artificial intelligence", "data analytics", "software development", "cloud computing"]
     opps = []
-    for i, kw in enumerate(keywords[:2]):  # limit to 2 to keep run fast
-        if i > 0:
-            time.sleep(5)  # avoid rate limiting between requests
-        url = f"https://api.www.sbir.gov/public/api/solicitations?keyword={urllib.parse.quote(kw)}&rows=10&open=1"
-        try:
-            req = urllib.request.Request(url, headers={"User-Agent": "GovConPipeline/1.0"})
-            with urllib.request.urlopen(req, timeout=15) as resp:
-                items = json.loads(resp.read())
-            for item in (items if isinstance(items, list) else []):
-                opps.append({
-                    "id":         f"SBIR-{item.get('solicitation_id', '')}",
-                    "source":     "SBIR",
-                    "title":      item.get("solicitation_title", ""),
-                    "agency":     item.get("agency", ""),
-                    "naics":      "541715",
-                    "setAside":   "Small Business",
-                    "type":       f"SBIR {item.get('program', 'Phase I')}",
-                    "postedDate": (item.get("open_date") or "")[:10],
-                    "dueDate":    (item.get("close_date") or "")[:10],
-                    "value":      int(item.get("award_ceiling") or 0),
-                    "description": item.get("program_descriptions") or "",
-                    "solNum":     str(item.get("solicitation_number") or ""),
-                    "url":        f"https://sbir.gov/sbirsearch/detail/{item.get('solicitation_id','')}",
-                })
-        except Exception as e:
-            print(f"⚠  SBIR fetch error ({kw}): {e}")
+    # Single request for all open solicitations to avoid rate limiting
+    url = "https://api.www.sbir.gov/public/api/solicitations?open=1&rows=50"
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "GovConPipeline/1.0"})
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            items = json.loads(resp.read())
+        for item in (items if isinstance(items, list) else []):
+            opps.append({
+                "id":         f"SBIR-{item.get('solicitation_id', '')}",
+                "source":     "SBIR",
+                "title":      item.get("solicitation_title", ""),
+                "agency":     item.get("agency", ""),
+                "naics":      "541715",
+                "setAside":   "Small Business",
+                "type":       f"SBIR {item.get('program', 'Phase I')}",
+                "postedDate": (item.get("open_date") or "")[:10],
+                "dueDate":    (item.get("close_date") or "")[:10],
+                "value":      int(item.get("award_ceiling") or 0),
+                "description": item.get("program_descriptions") or "",
+                "solNum":     str(item.get("solicitation_number") or ""),
+                "url":        f"https://sbir.gov/sbirsearch/detail/{item.get('solicitation_id','')}",
+            })
+    except Exception as e:
+        print(f"⚠  SBIR fetch error: {e}")
     print(f"  → {len(opps)} SBIR opportunities fetched")
     return opps
 
