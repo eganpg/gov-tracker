@@ -60,7 +60,8 @@ def fetch_sam() -> list:
 
     url = (
         f"https://api.sam.gov/opportunities/v2/search"
-        f"?limit=100"
+        f"?api_key={API_KEY}"
+        f"&limit=100"
         f"&postedFrom={urllib.parse.quote(from_dt)}"
         f"&postedTo={urllib.parse.quote(to_dt)}"
         f"&ptype=o,p,k,r,s"
@@ -69,12 +70,13 @@ def fetch_sam() -> list:
 
     print(f"Fetching SAM.gov: {url[:80]}…")
     try:
-        req  = urllib.request.Request(url, headers={
-            "User-Agent": "GovConPipeline/1.0",
-            "X-Api-Key":  API_KEY,
-        })
+        req  = urllib.request.Request(url, headers={"User-Agent": "GovConPipeline/1.0"})
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = json.loads(resp.read())
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8", errors="replace")[:500]
+        print(f"⚠  SAM.gov error: {e.code} {e.reason} — {body}")
+        return []
     except Exception as e:
         print(f"⚠  SAM.gov error: {e}")
         return []
