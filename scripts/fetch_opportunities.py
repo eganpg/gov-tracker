@@ -8,6 +8,7 @@ Requires SAM_API_KEY environment variable (set as GitHub Secret).
 import os
 import json
 import sys
+import time
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -58,31 +59,34 @@ def fetch_sam() -> list:
     from_dt  = (today - timedelta(days=60)).strftime("%m/%d/%Y")
     to_dt    = today.strftime("%m/%d/%Y")
 
-    url = (
-        f"https://api.sam.gov/prod/opportunities/v2/search"
-        f"?api_key={API_KEY}"
-        f"&limit=250"
-        f"&postedFrom={urllib.parse.quote(from_dt)}"
-        f"&postedTo={urllib.parse.quote(to_dt)}"
-    )
+    all_raw = []
+    # Fetch 50 results per NAICS code so results are targeted, not random
+    for naics_code in NAICS_CODES:
+        url = (
+            f"https://api.sam.gov/prod/opportunities/v2/search"
+            f"?api_key={API_KEY}"
+            f"&limit=50"
+            f"&postedFrom={urllib.parse.quote(from_dt)}"
+            f"&postedTo={urllib.parse.quote(to_dt)}"
+            f"&ncode={naics_code}"
+        )
+        print(f"Fetching SAM.gov NAICS {naics_code}…")
+        try:
+            req  = urllib.request.Request(url, headers={"User-Agent": "GovConPipeline/1.0"})
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                data = json.loads(resp.read())
+            raw = data.get("opportunitiesData", [])
+            print(f"  → {len(raw)} records (totalRecords: {data.get('totalRecords', '?')})")
+            all_raw.extend(raw)
+        except urllib.error.HTTPError as e:
+            body = e.read().decode("utf-8", errors="replace")[:300]
+            print(f"⚠  SAM.gov error ({naics_code}): {e.code} {e.reason} — {body}")
+        except Exception as e:
+            print(f"⚠  SAM.gov error ({naics_code}): {e}")
+        time.sleep(1)  # be polite between requests
 
-    print(f"Fetching SAM.gov: {url[:80]}…")
-    try:
-        req  = urllib.request.Request(url, headers={"User-Agent": "GovConPipeline/1.0"})
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            data = json.loads(resp.read())
-    except urllib.error.HTTPError as e:
-        body = e.read().decode("utf-8", errors="replace")[:500]
-        print(f"⚠  SAM.gov error: {e.code} {e.reason} — {body}")
-        return []
-    except Exception as e:
-        print(f"⚠  SAM.gov error: {e}")
-        return []
-
-    raw  = data.get("opportunitiesData", [])
-    print(f"  → SAM.gov raw records: {len(raw)} (totalRecords: {data.get('totalRecords', '?')})")
     opps = []
-    for o in raw:
+    for o in all_raw:
         naics = str(o.get("naicsCode") or "")
         opps.append({
             "id":         o.get("noticeId") or o.get("id", ""),
@@ -100,7 +104,7 @@ def fetch_sam() -> list:
             "url":        f"https://sam.gov/opp/{o.get('noticeId', '')}/view",
         })
 
-    print(f"  → {len(opps)} SAM.gov opportunities fetched")
+    print(f"  → {len(opps)} SAM.gov opportunities total")
     return opps
 
 

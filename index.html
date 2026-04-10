@@ -268,6 +268,7 @@
       </select>
       <select id="filterSetAside" onchange="filterOpps()">
         <option value="">All Set-Asides</option>
+        <option value="SB|HUBZone" selected>SB + HUBZone (My Certs)</option>
         <option value="SB">Small Business</option>
         <option value="HUBZone">HUBZone</option>
         <option value="WOSB">WOSB</option>
@@ -616,7 +617,10 @@ function filterOpps() {
   let filtered = ALL_OPPS.filter(o => {
     if (q && !(o.title.toLowerCase().includes(q) || o.agency.toLowerCase().includes(q) || (o.description||'').toLowerCase().includes(q))) return false;
     if (naics && o.naics !== naics) return false;
-    if (setAside && !(o.setAside||'').includes(setAside)) return false;
+    if (setAside) {
+      const terms = setAside.split('|');
+      if (!terms.some(t => (o.setAside||'').includes(t))) return false;
+    }
     if (source && o.source !== source) return false;
     if (scoreF === 'high' && o.score < 80) return false;
     if (scoreF === 'med' && (o.score < 50 || o.score >= 80)) return false;
