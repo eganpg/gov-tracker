@@ -1,0 +1,34 @@
+name: Fetch GovCon Opportunities
+
+on:
+  schedule:
+    - cron: "0 11 * * *"   # 6 AM ET (UTC-5) / 7 AM EDT (UTC-4)
+  workflow_dispatch:        # Allow manual run from Actions tab
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch opportunities
+        env:
+          SAM_API_KEY: ${{ secrets.SAM_API_KEY }}
+        run: python3 scripts/fetch_opportunities.py
+
+      - name: Commit updated data
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/opportunities.json
+          git diff --cached --quiet || git commit -m "chore: update opportunities data [skip ci]"
+          git push
