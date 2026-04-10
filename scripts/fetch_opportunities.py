@@ -97,7 +97,7 @@ def fetch_sam() -> list:
             "type":       o.get("baseType") or o.get("type") or "Solicitation",
             "postedDate": (o.get("postedDate") or "")[:10],
             "dueDate":    (o.get("responseDeadLine") or "")[:10],
-            "value":      int(o.get("award", {}).get("amount") or 0),
+            "value":      int((o.get("award") or {}).get("amount") or 0),
             "description": o.get("description") or "",
             "solNum":     o.get("solicitationNumber") or "",
             "url":        f"https://sam.gov/opp/{o.get('noticeId', '')}/view",
