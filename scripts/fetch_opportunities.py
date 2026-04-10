@@ -58,17 +58,12 @@ def fetch_sam() -> list:
     from_dt  = (today - timedelta(days=60)).strftime("%m/%d/%Y")
     to_dt    = today.strftime("%m/%d/%Y")
 
-    # Pass each NAICS code as a separate ncode param (comma-separated not supported)
-    ncode_params = "&".join(f"ncode={n}" for n in NAICS_CODES)
-
     url = (
         f"https://api.sam.gov/prod/opportunities/v2/search"
         f"?api_key={API_KEY}"
         f"&limit=100"
         f"&postedFrom={urllib.parse.quote(from_dt)}"
         f"&postedTo={urllib.parse.quote(to_dt)}"
-        f"&ptype=o&ptype=p&ptype=k&ptype=r&ptype=s"
-        f"&{ncode_params}"
     )
 
     print(f"Fetching SAM.gov: {url[:80]}…")
@@ -85,6 +80,7 @@ def fetch_sam() -> list:
         return []
 
     raw  = data.get("opportunitiesData", [])
+    print(f"  → SAM.gov raw records before filter: {len(raw)} (totalRecords: {data.get('totalRecords', '?')})")
     opps = []
     for o in raw:
         naics = str(o.get("naicsCode") or "541512")
