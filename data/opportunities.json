@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-04-12T11:10:13.830712Z",
+    "lastUpdated": "2026-04-13T11:26:18.901695Z",
     "source": "github-actions",
     "count": 250
   },
@@ -486,22 +486,6 @@
       "score": 55
     },
     {
-      "id": "e4ad5d0dc5c2457487f8a2ba2433ec5f",
-      "source": "SAM.gov",
-      "title": "PC Signal Annual Renewal",
-      "agency": "NATIONAL AERONAUTICS AND SPACE ADMINISTRATION.NATIONAL AERONAUTICS AND SPACE ADMINISTRATION.NASA SHARED SERVICES CENTER",
-      "naics": "541519",
-      "setAside": "Total Small Business Set-Aside (FAR 19.5)",
-      "type": "Combined Synopsis/Solicitation",
-      "postedDate": "2026-04-06",
-      "dueDate": "2026-04-07",
-      "value": 0,
-      "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=e4ad5d0dc5c2457487f8a2ba2433ec5f",
-      "solNum": "80NSSC26928986Q",
-      "url": "https://sam.gov/opp/e4ad5d0dc5c2457487f8a2ba2433ec5f/view",
-      "score": 55
-    },
-    {
       "id": "b7e7d6cb0b454dd29780bf873c517f8b",
       "source": "SAM.gov",
       "title": "Intent to Sole Source",
@@ -531,6 +515,22 @@
       "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=116e2640cf2242b7b3d0da4e5ebdce44",
       "solNum": "HQ0516-FY-26-0003",
       "url": "https://sam.gov/opp/116e2640cf2242b7b3d0da4e5ebdce44/view",
+      "score": 55
+    },
+    {
+      "id": "dc85330c80444805952044e6fb35277a",
+      "source": "SAM.gov",
+      "title": "A/V Support Services in Support of USAR-LC",
+      "agency": "DEPT OF DEFENSE.DEPT OF THE ARMY.AMC.ACC.ACC-CTRS.ACC-NJ.W6QK ACC-PICA",
+      "naics": "518210",
+      "setAside": "Total Small Business Set-Aside (FAR 19.5)",
+      "type": "Combined Synopsis/Solicitation",
+      "postedDate": "2026-02-26",
+      "dueDate": "2026-02-26",
+      "value": 0,
+      "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=dc85330c80444805952044e6fb35277a",
+      "solNum": "W15QKN26RA023",
+      "url": "https://sam.gov/opp/dc85330c80444805952044e6fb35277a/view",
       "score": 55
     },
     {
@@ -1411,6 +1411,22 @@
       "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=c2c4d2ddd2b246af8b005398d44ab51a",
       "solNum": "DOIFFBO260048",
       "url": "https://sam.gov/opp/c2c4d2ddd2b246af8b005398d44ab51a/view",
+      "score": 35
+    },
+    {
+      "id": "bd3b490af4074cc0970303f036bce576",
+      "source": "SAM.gov",
+      "title": "Predictive Modeling for Unrated Carriers",
+      "agency": "TRANSPORTATION, DEPARTMENT OF.OFFICE OF THE SECRETARY.6913G6 VOLPE NATL TRANS SYS CNTR",
+      "naics": "541519",
+      "setAside": "No Set aside used",
+      "type": "Combined Synopsis/Solicitation",
+      "postedDate": "2026-04-13",
+      "dueDate": "",
+      "value": 70000,
+      "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=bd3b490af4074cc0970303f036bce576",
+      "solNum": "6913G626Q300020",
+      "url": "https://sam.gov/opp/bd3b490af4074cc0970303f036bce576/view",
       "score": 35
     },
     {
@@ -3699,22 +3715,6 @@
       "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=e190b72896d549fa8314077a177d1a8a",
       "solNum": "36C26126Q0493",
       "url": "https://sam.gov/opp/e190b72896d549fa8314077a177d1a8a/view",
-      "score": 30
-    },
-    {
-      "id": "c987c3d55f274fe995079f8c903a67a5",
-      "source": "SAM.gov",
-      "title": "Document Management Services",
-      "agency": "HOMELAND SECURITY, DEPARTMENT OF.TRANSPORTATION SECURITY ADMINISTRATION.CONTRACTING AND PROCUREMENT",
-      "naics": "518210",
-      "setAside": "",
-      "type": "Special Notice",
-      "postedDate": "2026-03-13",
-      "dueDate": "",
-      "value": 0,
-      "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=c987c3d55f274fe995079f8c903a67a5",
-      "solNum": "JA-2026-04-1292",
-      "url": "https://sam.gov/opp/c987c3d55f274fe995079f8c903a67a5/view",
       "score": 30
     },
     {
