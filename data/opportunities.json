@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-04-18T11:11:11.486362Z",
+    "lastUpdated": "2026-04-19T11:10:55.300259Z",
     "source": "github-actions",
     "count": 250
   },
@@ -579,6 +579,22 @@
       "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=6fd537df284f4195bbbe8a5e923ba278",
       "solNum": "W5170126R0001",
       "url": "https://sam.gov/opp/6fd537df284f4195bbbe8a5e923ba278/view",
+      "score": 55
+    },
+    {
+      "id": "6c8dcb4fd13847a08b29486a3f7087b2",
+      "source": "SAM.gov",
+      "title": "Multi-Spectral Sensing Technologies Research and Development (MUSTER)",
+      "agency": "DEPT OF DEFENSE.DEPT OF THE AIR FORCE.AIR FORCE MATERIEL COMMAND.AIR FORCE RESEARCH LABORATORY.FA2377 USAF AFMC AFRL PZL AFRL RYKS",
+      "naics": "541715",
+      "setAside": "",
+      "type": "Solicitation",
+      "postedDate": "2026-04-13",
+      "dueDate": "",
+      "value": 1574611,
+      "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=6c8dcb4fd13847a08b29486a3f7087b2",
+      "solNum": "FA237726CB018",
+      "url": "https://sam.gov/opp/6c8dcb4fd13847a08b29486a3f7087b2/view",
       "score": 55
     },
     {
@@ -1190,38 +1206,6 @@
       "score": 40
     },
     {
-      "id": "f969143a49044e0bbd65c5ddce5044c4",
-      "source": "SAM.gov",
-      "title": "Notice of Intent/ Criterion Research, LLC.",
-      "agency": "ENERGY, DEPARTMENT OF.ENERGY, DEPARTMENT OF.HEADQUARTERS PROCUREMENT SERVICES",
-      "naics": "518210",
-      "setAside": "",
-      "type": "Solicitation",
-      "postedDate": "2026-03-20",
-      "dueDate": "2026-04-03",
-      "value": 0,
-      "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=f969143a49044e0bbd65c5ddce5044c4",
-      "solNum": "89303026NEI000093",
-      "url": "https://sam.gov/opp/f969143a49044e0bbd65c5ddce5044c4/view",
-      "score": 40
-    },
-    {
-      "id": "f2ed08e5f92649a7b1fffcab4b522740",
-      "source": "SAM.gov",
-      "title": "D--Notice of Intent to Issue a Sole Source Award to Criterion Research, LLC.",
-      "agency": "ENERGY, DEPARTMENT OF.ENERGY, DEPARTMENT OF.HEADQUARTERS PROCUREMENT SERVICES",
-      "naics": "518210",
-      "setAside": "",
-      "type": "Solicitation",
-      "postedDate": "2026-03-20",
-      "dueDate": "2026-04-03",
-      "value": 0,
-      "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=f2ed08e5f92649a7b1fffcab4b522740",
-      "solNum": "89303026NEI000093",
-      "url": "https://sam.gov/opp/f2ed08e5f92649a7b1fffcab4b522740/view",
-      "score": 40
-    },
-    {
       "id": "f646b1575ce34bcb82f2e118f3db2fa8",
       "source": "SAM.gov",
       "title": "Holistic Models for Decision Making",
@@ -1670,6 +1654,22 @@
       "score": 35
     },
     {
+      "id": "55eda5c130ae402d80ec74a847c7a94e",
+      "source": "SAM.gov",
+      "title": "7A--Information Technology Purchase for Portsmouth Pad",
+      "agency": "ENERGY, DEPARTMENT OF.ENERGY, DEPARTMENT OF.EM-PORTSMOUTH/PADUCAH PROJECT OFC",
+      "naics": "541519",
+      "setAside": "",
+      "type": "Award Notice",
+      "postedDate": "2026-04-14",
+      "dueDate": "",
+      "value": 419,
+      "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=55eda5c130ae402d80ec74a847c7a94e",
+      "solNum": "372127",
+      "url": "https://sam.gov/opp/55eda5c130ae402d80ec74a847c7a94e/view",
+      "score": 35
+    },
+    {
       "id": "f030536777334e03a9723f5b5f88200d",
       "source": "SAM.gov",
       "title": "D--The purpose of this Call Order is to add the following project to the Project Teams Software: VICK 209252/310725/324137 - Stabilize Mint Springs, Terraces & Graves. See\nattached Call Order Request.",
@@ -1763,22 +1763,6 @@
       "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=7f5d8b5978104817bf7e8001d4115580",
       "solNum": "36C24526Q0302",
       "url": "https://sam.gov/opp/7f5d8b5978104817bf7e8001d4115580/view",
-      "score": 35
-    },
-    {
-      "id": "94d8295a26f24a4c90bf2767ba76c051",
-      "source": "SAM.gov",
-      "title": "High Assurance Computer Systems Security",
-      "agency": "DEPT OF DEFENSE.DEPT OF THE NAVY.ONR.ONR NRL.NAVAL RESEARCH LABORATORY",
-      "naics": "541715",
-      "setAside": "No Set aside used",
-      "type": "Special Notice",
-      "postedDate": "2026-04-15",
-      "dueDate": "",
-      "value": 54033212,
-      "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=94d8295a26f24a4c90bf2767ba76c051",
-      "solNum": "N0017321F2015",
-      "url": "https://sam.gov/opp/94d8295a26f24a4c90bf2767ba76c051/view",
       "score": 35
     },
     {
@@ -2182,22 +2166,6 @@
       "score": 32
     },
     {
-      "id": "c8ecacc8669e4873a2c5ff94f8651949",
-      "source": "SAM.gov",
-      "title": "Colombia BAE Mediation Maintenance and Support",
-      "agency": "JUSTICE, DEPARTMENT OF.DRUG ENFORCEMENT ADMINISTRATION.HEADQUATERS",
-      "naics": "541519",
-      "setAside": "",
-      "type": "Special Notice",
-      "postedDate": "2026-04-14",
-      "dueDate": "2026-04-17",
-      "value": 0,
-      "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=c8ecacc8669e4873a2c5ff94f8651949",
-      "solNum": "D-26-ST-0122",
-      "url": "https://sam.gov/opp/c8ecacc8669e4873a2c5ff94f8651949/view",
-      "score": 32
-    },
-    {
       "id": "b08226f7fe8d421a9be8b94cf573f521",
       "source": "SAM.gov",
       "title": "DJ10--Data Monitoring and Sensing - Structured Data - RFI  (VA-26-00050089)",
@@ -2323,6 +2291,22 @@
       "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=51b1e59e1ee54db3b24dc95a1814b6cf",
       "solNum": "7571TE26Q00017",
       "url": "https://sam.gov/opp/51b1e59e1ee54db3b24dc95a1814b6cf/view",
+      "score": 32
+    },
+    {
+      "id": "c6b774910554432bb9a28160090261b0",
+      "source": "SAM.gov",
+      "title": "Secure Off site Data Storage",
+      "agency": "DEPT OF DEFENSE.DEPT OF THE ARMY.AMC.ACC.MISSION INSTALLATION CONTRACTING COMMAND.FDO SAM HOUSTON.W6QM MICC-FDO FT SAM HOUSTON",
+      "naics": "518210",
+      "setAside": "No Set aside used",
+      "type": "Sources Sought",
+      "postedDate": "2026-03-18",
+      "dueDate": "2026-04-10",
+      "value": 0,
+      "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=c6b774910554432bb9a28160090261b0",
+      "solNum": "W9124J-26-P-DATA",
+      "url": "https://sam.gov/opp/c6b774910554432bb9a28160090261b0/view",
       "score": 32
     },
     {
@@ -3683,6 +3667,22 @@
       "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=39514b4dedeb48f989a2f5cce03f375c",
       "solNum": "7200AA24C00107",
       "url": "https://sam.gov/opp/39514b4dedeb48f989a2f5cce03f375c/view",
+      "score": 30
+    },
+    {
+      "id": "3ca3000987154604b033bcd11787f5ad",
+      "source": "SAM.gov",
+      "title": "Exhibit Sharing Application - Intent to Sole Source",
+      "agency": "CONSUMER FINANCIAL PROTECTION BUREAU.CONSUMER FINANCIAL PROTECTION BUREAU.CONSUMER FINANCE PROTECTION BUREAU",
+      "naics": "518210",
+      "setAside": "",
+      "type": "Justification",
+      "postedDate": "2026-03-20",
+      "dueDate": "",
+      "value": 0,
+      "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=3ca3000987154604b033bcd11787f5ad",
+      "solNum": "9531CB26C00xx",
+      "url": "https://sam.gov/opp/3ca3000987154604b033bcd11787f5ad/view",
       "score": 30
     },
     {
