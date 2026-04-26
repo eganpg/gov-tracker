@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-04-25T11:13:25.554904Z",
+    "lastUpdated": "2026-04-26T11:13:25.023270Z",
     "source": "github-actions",
     "count": 250
   },
@@ -1750,22 +1750,6 @@
       "score": 35
     },
     {
-      "id": "36bd92173e7945ea85294c436adb0df9",
-      "source": "SAM.gov",
-      "title": "7A--Office for Law Enforcement (OLE) Magnet Bundle",
-      "agency": "COMMERCE, DEPARTMENT OF.NATIONAL OCEANIC AND ATMOSPHERIC ADMINISTRATION.DEPT OF COMMERCE NOAA",
-      "naics": "541519",
-      "setAside": "",
-      "type": "Award Notice",
-      "postedDate": "2026-04-21",
-      "dueDate": "",
-      "value": 129936,
-      "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=36bd92173e7945ea85294c436adb0df9",
-      "solNum": "1305M326Q0118",
-      "url": "https://sam.gov/opp/36bd92173e7945ea85294c436adb0df9/view",
-      "score": 35
-    },
-    {
       "id": "cd44376acd66457ba89b4e51b95f56fe",
       "source": "SAM.gov",
       "title": "ESI - Okta SW licenses",
@@ -2243,6 +2227,22 @@
       "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=d94e12e328ba4606b8a452e237aa8cf4",
       "solNum": "622673622",
       "url": "https://sam.gov/opp/d94e12e328ba4606b8a452e237aa8cf4/view",
+      "score": 32
+    },
+    {
+      "id": "817837a066b147fab60ad8831d0d13e7",
+      "source": "SAM.gov",
+      "title": "N0017326Q5313 - Annual Software Maintenance/Support and Hardware Calibration",
+      "agency": "DEPT OF DEFENSE.DEPT OF THE NAVY.ONR.ONR NRL.NAVAL RESEARCH LABORATORY",
+      "naics": "541519",
+      "setAside": "No Set aside used",
+      "type": "Special Notice",
+      "postedDate": "2026-04-25",
+      "dueDate": "2026-04-29",
+      "value": 0,
+      "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=817837a066b147fab60ad8831d0d13e7",
+      "solNum": "N0017326Q5313",
+      "url": "https://sam.gov/opp/817837a066b147fab60ad8831d0d13e7/view",
       "score": 32
     },
     {
@@ -3558,22 +3558,6 @@
       "score": 30
     },
     {
-      "id": "05c7d4d1f4134f28975bfbe7a9ed86eb",
-      "source": "SAM.gov",
-      "title": "D--SPECIAL NOTICE OF INTENT TO AWARD TO A SOLE SOURCE",
-      "agency": "INTERIOR, DEPARTMENT OF THE.US FISH AND WILDLIFE SERVICE.FWS, IT SERVICES",
-      "naics": "518210",
-      "setAside": "",
-      "type": "Special Notice",
-      "postedDate": "2026-04-01",
-      "dueDate": "2026-04-11",
-      "value": 0,
-      "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=05c7d4d1f4134f28975bfbe7a9ed86eb",
-      "solNum": "DOIFFBO260054",
-      "url": "https://sam.gov/opp/05c7d4d1f4134f28975bfbe7a9ed86eb/view",
-      "score": 30
-    },
-    {
       "id": "3c6b97a138bb43098d65add93df37317",
       "source": "SAM.gov",
       "title": "JOFOC - Market Intelligence Energy Desktop and Feed",
@@ -3606,22 +3590,6 @@
       "score": 30
     },
     {
-      "id": "39514b4dedeb48f989a2f5cce03f375c",
-      "source": "SAM.gov",
-      "title": "Intent to Sole Source - FOIAXpress Services",
-      "agency": "AGENCY FOR INTERNATIONAL DEVELOPMENT.AGENCY FOR INTERNATIONAL DEVELOPMENT.USAID M/OAA",
-      "naics": "518210",
-      "setAside": "",
-      "type": "Justification",
-      "postedDate": "2026-03-27",
-      "dueDate": "",
-      "value": 0,
-      "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=39514b4dedeb48f989a2f5cce03f375c",
-      "solNum": "7200AA24C00107",
-      "url": "https://sam.gov/opp/39514b4dedeb48f989a2f5cce03f375c/view",
-      "score": 30
-    },
-    {
       "id": "e190b72896d549fa8314077a177d1a8a",
       "source": "SAM.gov",
       "title": "AN11--Online Survey Development for Program Evaluation within the  Women\u00e2\u20ac\u2122s Health Evaluation Initiative (WHEI)",
@@ -3635,6 +3603,38 @@
       "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=e190b72896d549fa8314077a177d1a8a",
       "solNum": "36C26126Q0493",
       "url": "https://sam.gov/opp/e190b72896d549fa8314077a177d1a8a/view",
+      "score": 30
+    },
+    {
+      "id": "2b3cc4ee41804c28a06ddfaf11e25724",
+      "source": "SAM.gov",
+      "title": "Project Sabre - Commercial Solutions Opening (CSO)",
+      "agency": "DEPT OF DEFENSE",
+      "naics": "518210",
+      "setAside": "No Set aside used",
+      "type": "Special Notice",
+      "postedDate": "2026-02-26",
+      "dueDate": "2026-03-06",
+      "value": 0,
+      "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=2b3cc4ee41804c28a06ddfaf11e25724",
+      "solNum": "FA8694-26-S-C001",
+      "url": "https://sam.gov/opp/2b3cc4ee41804c28a06ddfaf11e25724/view",
+      "score": 30
+    },
+    {
+      "id": "00e5e77de3ec44b29f90a1cd06bb6f5d",
+      "source": "SAM.gov",
+      "title": "U009-- Notice of Intent To Sole Source  For The On Line Interactive Screening Program  Veterans in Crisis",
+      "agency": "VETERANS AFFAIRS, DEPARTMENT OF.VETERANS AFFAIRS, DEPARTMENT OF.245-NETWORK CONTRACT OFFICE 5 (36C245)",
+      "naics": "518210",
+      "setAside": "",
+      "type": "Special Notice",
+      "postedDate": "2026-02-25",
+      "dueDate": "2026-03-07",
+      "value": 0,
+      "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=00e5e77de3ec44b29f90a1cd06bb6f5d",
+      "solNum": "36C24526Q0302",
+      "url": "https://sam.gov/opp/00e5e77de3ec44b29f90a1cd06bb6f5d/view",
       "score": 30
     },
     {
