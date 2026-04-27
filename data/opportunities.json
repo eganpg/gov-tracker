@@ -1,8 +1,8 @@
 {
   "meta": {
-    "lastUpdated": "2026-04-26T11:13:25.023270Z",
+    "lastUpdated": "2026-04-27T11:30:49.637740Z",
     "source": "github-actions",
-    "count": 250
+    "count": 249
   },
   "opportunities": [
     {
@@ -1366,6 +1366,22 @@
       "score": 40
     },
     {
+      "id": "93ceb2271b924ca98c127c9ee3739b9e",
+      "source": "SAM.gov",
+      "title": "Autonomous Space-Based Situational Awareness Software Development - Starling Mission Follow-On",
+      "agency": "NATIONAL AERONAUTICS AND SPACE ADMINISTRATION.NATIONAL AERONAUTICS AND SPACE ADMINISTRATION.NASA AMES RESEARCH CENTER",
+      "naics": "541715",
+      "setAside": "No Set aside used",
+      "type": "Presolicitation",
+      "postedDate": "2026-04-26",
+      "dueDate": "2026-04-28",
+      "value": 0,
+      "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=93ceb2271b924ca98c127c9ee3739b9e",
+      "solNum": "80ARC026R0004",
+      "url": "https://sam.gov/opp/93ceb2271b924ca98c127c9ee3739b9e/view",
+      "score": 40
+    },
+    {
       "id": "a5d50554e27f4ffe9c3727fbdee07d17",
       "source": "SAM.gov",
       "title": "FA9453-23-R-A004 Neutron Star ARA Call 001",
@@ -2454,6 +2470,22 @@
       "score": 32
     },
     {
+      "id": "37850aca1eb4480f86616655f94601aa",
+      "source": "SAM.gov",
+      "title": "DRAFT SF1449 Electronic Tax Preparation Software",
+      "agency": "TREASURY, DEPARTMENT OF THE.INTERNAL REVENUE SERVICE",
+      "naics": "541511",
+      "setAside": "No Set aside used",
+      "type": "Special Notice",
+      "postedDate": "2026-04-26",
+      "dueDate": "2026-05-15",
+      "value": 0,
+      "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=37850aca1eb4480f86616655f94601aa",
+      "solNum": "2043FY-26-R-00007",
+      "url": "https://sam.gov/opp/37850aca1eb4480f86616655f94601aa/view",
+      "score": 30
+    },
+    {
       "id": "dcadae38065a42718e576dfc1d680f57",
       "source": "SAM.gov",
       "title": "DA10--Medicopia Software and Medical Supplies (VA-26-00045732)",
@@ -2803,22 +2835,6 @@
       "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=eeed2eb41b2c4039b8d59932e37bbaaa",
       "solNum": "89243326NFE000229",
       "url": "https://sam.gov/opp/eeed2eb41b2c4039b8d59932e37bbaaa/view",
-      "score": 30
-    },
-    {
-      "id": "11533cd622ae4b10b3d0bd6418c3813d",
-      "source": "SAM.gov",
-      "title": "ThinkTrends Software Implementation and Support",
-      "agency": "HEALTH AND HUMAN SERVICES, DEPARTMENT OF.FOOD AND DRUG ADMINISTRATION.FDA OFFICE OF ACQ  GRANT SVCS",
-      "naics": "541511",
-      "setAside": "",
-      "type": "Sources Sought",
-      "postedDate": "2026-04-07",
-      "dueDate": "2026-04-17",
-      "value": 0,
-      "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=11533cd622ae4b10b3d0bd6418c3813d",
-      "solNum": "FDA-SS_2026-040726",
-      "url": "https://sam.gov/opp/11533cd622ae4b10b3d0bd6418c3813d/view",
       "score": 30
     },
     {
@@ -3622,22 +3638,6 @@
       "score": 30
     },
     {
-      "id": "00e5e77de3ec44b29f90a1cd06bb6f5d",
-      "source": "SAM.gov",
-      "title": "U009-- Notice of Intent To Sole Source  For The On Line Interactive Screening Program  Veterans in Crisis",
-      "agency": "VETERANS AFFAIRS, DEPARTMENT OF.VETERANS AFFAIRS, DEPARTMENT OF.245-NETWORK CONTRACT OFFICE 5 (36C245)",
-      "naics": "518210",
-      "setAside": "",
-      "type": "Special Notice",
-      "postedDate": "2026-02-25",
-      "dueDate": "2026-03-07",
-      "value": 0,
-      "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=00e5e77de3ec44b29f90a1cd06bb6f5d",
-      "solNum": "36C24526Q0302",
-      "url": "https://sam.gov/opp/00e5e77de3ec44b29f90a1cd06bb6f5d/view",
-      "score": 30
-    },
-    {
       "id": "c9d280b44a0a4ef1a9772ce95385b525",
       "source": "SAM.gov",
       "title": "Test, Evaluation, and Support Team 4 (TEST4)",
@@ -3987,22 +3987,6 @@
       "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=ca730ae566c247c3bf1bb1ccbb43267d",
       "solNum": "HHS-AHRQ-SS-26-10002",
       "url": "https://sam.gov/opp/ca730ae566c247c3bf1bb1ccbb43267d/view",
-      "score": 30
-    },
-    {
-      "id": "6196286e0ac94305a51c9e1332fa17a5",
-      "source": "SAM.gov",
-      "title": "Optimizing Packaging Requirements for Extended Shelf Life of Diverse Meal Components",
-      "agency": "DEPT OF DEFENSE.DEPT OF THE ARMY.AMC.ACC.ACC-CTRS.ACC-APG.W6QK ACC-APG NATICK",
-      "naics": "541715",
-      "setAside": "No Set aside used",
-      "type": "Sources Sought",
-      "postedDate": "2026-04-17",
-      "dueDate": "2026-05-08",
-      "value": 0,
-      "description": "https://api.sam.gov/prod/opportunities/v1/noticedesc?noticeid=6196286e0ac94305a51c9e1332fa17a5",
-      "solNum": "W911QY26_OPTIMIZING_PACKAGING",
-      "url": "https://sam.gov/opp/6196286e0ac94305a51c9e1332fa17a5/view",
       "score": 30
     }
   ]
